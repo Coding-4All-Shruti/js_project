@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+      
+      *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+
+        font-family: sans-serif;
+        background:  linear-gradient(
+            to right,
+            #1e3c72,
+            #2a5298,
+            #00c6fb,
+            #1e3c72
+
+        );
+
+      }
+
+
+      h2{
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        text-decoration: underline;
+      }
+
+
+      .container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        box-shadow: 0px 1px 4px rgba(0,0,0,0.16);
+        width: 40%;
+        height: 500px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 3px;
+
+
+      }
+
+
+
+      #result{
+         border: 1px solid #333;
+         padding: 40px;
+         height: 300px;
+         width: 90%;
+         margin-bottom: 30px;
+         background: linear-gradient(168deg, #ff9a9e, #fad0c4);
+         border-radius: 3px;
+
+      }
+
+      .button-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+      }
+
+      button{
+        font-size: 20px;
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        background-color: indigo;
+        color: #fff;
+        outline: none;
+        border: none;
+        animation: pulse 1.5s infinite alternate;
+        cursor: pointer;
+
+
+      }
+
+     button:hover{
+        background-color: darkblue;
+     }
+
+
+
+
+      @keyframes pulse {
+        from{
+          transform: scale(1); 
+        }
+         to{
+           transform: scale(1.1);
+         }
+      }
+
+
+
+
+
+
+
+
+    </style>
+
+   </head>
+
+
+<body>
+
+
+    <div class="container">
+      <h2>Speech to Text Converter</h2>
+      <div id="result"></div>
+      <div class="button-container">
+        <button onclick="startConverting()">
+            <i class="fa fa-microphone"></i>
+            <button onclick="stopConverting()">
+                <i class="fa fa-stop"></i>
+            
+        </button>
+      </div>
+    </div>
+
+
+    <Script>
+
+      const resultElement = document.getElementById("result");
+      let recognition;
+
+
+
+
+       function startConverting(){
+
+        if('webkitSpeechRecognition' in window){
+
+          recognition = new webkitSpeechRecognition();
+
+          setupRecognition(recognition);
+
+          recognition.start();
+        }
+         
+       }
+
+
+       function setupRecognition(recognition){
+
+        recognition.continuous = true;
+
+        recognition.interimResults = true;
+
+        recognition.lang = 'en-us';
+
+        recognition.onresult = function(event){
+
+          const {finalTranscript, interTranscript} =
+
+          processResult(event.results);
+
+          resultElement.innerHTML = finalTranscript + interTranscript;
+
+        }
+       }
+
+
+
+       function processResult(results){
+        let finalTranscript = ' ';
+        let interTranscript = ' ';
+
+        for(let i=0; i<results.length; i++){
+          let transcript = results[i][0].transcript;
+          transcript.replace("\n","<br>");
+
+          if(results[i].isFinal){
+               finalTranscript += transcript;
+          }else{
+            interTranscript += transcript
+          }
+        }
+
+        return {finalTranscript, interTranscript}
+
+
+      }
+
+
+
+
+      function stopConverting(){
+          if(recognition){
+            recognition.stop();
+          }
+      }
+
+    </Script>
+    
+</body>
+</html>
